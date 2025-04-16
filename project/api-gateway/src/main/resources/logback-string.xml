@@ -1,0 +1,33 @@
+<configuration>
+   <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+
+   <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+       <destination>${LOGSTASH_HOST}</destination>
+       <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+           <providers>
+               <timestamp>
+                   <timeZone>UTC</timeZone>
+               </timestamp>
+               <pattern>
+                   <pattern>
+                       {
+                           "service": "${spring.application.name:-api-gateway}",
+                           "level": "%level",
+                           "thread": "%thread",
+                           "logger": "%logger",
+                           "message": "%message"
+                       }
+                   </pattern>
+               </pattern>
+               <arguments/>
+               <stackTrace/>
+           </providers>
+       </encoder>
+   </appender>
+
+
+   <root level="INFO">
+       <appender-ref ref="LOGSTASH"/>
+   </root>
+</configuration>

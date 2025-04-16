@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer
+  labels:
+    app: customer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: customer
+  template:
+    metadata:
+      labels:
+        app: customer
+    spec:
+      containers:
+      - name: customer
+        image: alpha0011/customer:1.0.0
+        ports:
+        - containerPort: 8084
+        env:
+        - name: spring.application.name
+          value: "customer"
+        - name: eureka.client.service-url.defaultZone
+          value: "http://eurekaserver:8761/eureka/"
+        - name: spring.datasource.url
+          value: "jdbc:mysql://mysql:3306/mikroservice_customer"
+        - name: spring.datasource.username
+          value: "sa"
+        - name: spring.datasource.password
+          value: ""
+
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: customer
+#   labels:
+#     app: customer
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: customer
+#   template:
+#     metadata:
+#       labels:
+#         app: customer
+#     spec:
+#       containers:
+#       - name: customer
+#         image: alpha0011/customer:1.0.0
+#         ports:
+#         - containerPort: 8084
+#         env:
+#         - name: spring.application.name
+#           value: "customer"
+#         - name: eureka.client.service-url.defaultZone
+#           value: "http://eurekaserver:8761/eureka/"
+#         - name: spring.datasource.url
+#           value: "jdbc:mysql://mysql:3306/mikroservice_customer?useSSL=false&allowPublicKeyRetrieval=true"
+#         - name: spring.datasource.username
+#           value: "root"
+#         - name: spring.datasource.password
+#           value: "root_password"
+#         - name: spring.datasource.driver-class-name
+#           value: "com.mysql.cj.jdbc.Driver"
+#         resources:
+#           limits:
+#             memory: "512Mi"
+#             cpu: "500m"
+#           requests:
+#             memory: "256Mi"
+#             cpu: "200m"
+#         livenessProbe:
+#           httpGet:
+#             path: /actuator/health
+#             port: 8084
+#           initialDelaySeconds: 90
+#           periodSeconds: 30
+#         readinessProbe:
+#           httpGet:
+#             path: /actuator/health
+#             port: 8084
+#           initialDelaySeconds: 30
+#           periodSeconds: 15

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order
+  labels:
+    app: order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order
+  template:
+    metadata:
+      labels:
+        app: order
+    spec:
+      containers:
+      - name: order
+        image: alpha0011/order:1.0.0
+        ports:
+        - containerPort: 8083
+        env:
+        - name: spring.application.name
+          value: "order"
+        - name: eureka.client.service-url.defaultZone
+          value: "http://eurekaserver:8761/eureka/"
+        - name: spring.datasource.url
+          value: "jdbc:mysql://mysql:3306/mikroservice_order?useSSL=false&serverTimezone=UTC"
+        - name: spring.datasource.username
+          value: "root"
+        - name: spring.datasource.password
+          value: "root_password"

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eurekaserver
+  labels:
+    app: eurekaserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eurekaserver
+  template:
+    metadata:
+      labels:
+        app: eurekaserver
+    spec:
+      containers:
+      - name: eurekaserver
+        image: alpha0011/eurekaserver:1.0.0   # Ganti dengan image repository Anda
+        ports:
+        - containerPort: 8761
+        env:
+        - name: spring.application.name
+          value: "eureka-server"
+        - name: eureka.client.register-with-eureka
+          value: "false"
+        - name: eureka.client.fetch-registry
+          value: "false"

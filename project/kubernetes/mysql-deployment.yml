@@ -1,0 +1,78 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#  name: mysql
+#  labels:
+#    app: mysql
+# spec:
+#  replicas: 1
+#  selector:
+#    matchLabels:
+#      app: mysql
+#  template:
+#    metadata:
+#      labels:
+#        app: mysql
+#    spec:
+#      containers:
+#      - name: mysql
+#        image: mysql:8.0
+#        ports:
+#        - containerPort: 3306
+#        env:
+#        - name: MYSQL_ROOT_PASSWORD
+#          value: "root_password"
+#        # - name: MYSQL_DATABASE
+#        #   value: "mikroservice_products"  # Anda dapat inisialisasi satu database default atau menggunakan skrip inisialisasi untuk beberapa database.
+#        volumeMounts:
+#        - name: mysql-data
+#          mountPath: /var/lib/mysql
+#         # Volume untuk inisialisasi database: Semua file SQL di direktori ini akan dijalankan saat container pertama kali dibuat
+#        volumeMounts:
+#        - name: mysql-initdb
+#          mountPath: /docker-entrypoint-initdb.d
+#      volumes:
+#      - name: mysql-initdb
+#        hostPath:
+#          path: ./initdb    # Pastikan folder 'initdb' terdapat di host dan berisi file init.sql
+#          type: Directory
+#      - name: mysql-data
+#        emptyDir: {}   # Untuk produksi, sebaiknya gunakan PersistentVolumeClaim
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root_password"
+            - name: MYSQL_DATABASE
+              value: "mikroservice_produk"
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+            - name: mysql-init-script
+              mountPath: /docker-entrypoint-initdb.d
+      volumes: # <-- Moved outside of the container definition
+        - name: mysql-init-script
+          configMap:
+            name: mysql-init-script
+        - name: mysql-data
+          emptyDir: {}

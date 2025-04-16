@@ -1,0 +1,95 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: payment
+#   labels:
+#     app: payment
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: payment
+#   template:
+#     metadata:
+#       labels:
+#         app: payment
+#     spec:
+#       containers:
+#       - name: payment
+#         image: talpha0011/payment:1.0.0
+#         ports:
+#         - containerPort: 8082
+#         env:
+#         - name: spring.application.name
+#           value: "payment"
+#         - name: eureka.client.service-url.defaultZone
+#           value: "http://eurekaserver:8761/eureka/"
+#         - name: spring.datasource.url
+#           value: "jdbc:mysql://mysql:3306/mikroservice_payment?useSSL=false&serverTimezone=UTC"
+#         - name: spring.datasource.username
+#           value: "root"
+#         - name: spring.datasource.password
+#           value: "root_password"
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment
+  labels:
+    app: payment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment
+  template:
+    metadata:
+      labels:
+        app: payment
+    spec:
+      containers:
+      - name: payment
+        image: alpha0011/payment:1.0.0
+        ports:
+        - containerPort: 8082
+        env:
+        - name: spring.application.name
+          value: "payment"
+        - name: eureka.client.service-url.defaultZone
+          value: "http://eurekaserver:8761/eureka/"
+        - name: spring.datasource.url
+          value: "jdbc:mysql://mysql:3306/microservice_payment?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+        - name: spring.datasource.username
+          value: "root"
+        - name: spring.datasource.password
+          value: "root_password"
+        - name: spring.datasource.driver-class-name
+          value: "com.mysql.cj.jdbc.Driver"
+        - name: spring.jpa.hibernate.ddl-auto
+          value: "update"
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8082
+          initialDelaySeconds: 120  # Longer delay for payment service
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8082
+          initialDelaySeconds: 45
+          periodSeconds: 15
+        startupProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8082
+          failureThreshold: 30
+          periodSeconds: 10
