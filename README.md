@@ -124,6 +124,7 @@ kubectl apply -f <file-service.yaml>
 👉 https://drive.google.com/file/d/1S10Dv2oNDiieS_V0g8q69loB2trx0CKF/view?usp=drive_link  
 
    📹 Video Kibana
+   
 👉 https://drive.google.com/file/d/1JoZRHPcMHFdPA_ncDAIS3K6JfQAoArK3/view?usp=drive_link
    
 
